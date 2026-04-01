@@ -1,7 +1,6 @@
 services:
   mysql:
     image: mysql:8
-    container_name: projecttool-mysql
     environment:
       MYSQL_ROOT_PASSWORD: kotlin2025
       MYSQL_DATABASE: project_tool
@@ -18,7 +17,6 @@ services:
 
   app:
     build: .
-    container_name: projecttool-app
     depends_on:
       mysql:
         condition: service_healthy
