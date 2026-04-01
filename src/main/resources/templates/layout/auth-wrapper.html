@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Tool</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #0f172a, #020617);
+        }
+        .auth-card {
+            border-radius: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container vh-100 d-flex align-items-center justify-content-center">
+    <div class="row w-100" style="max-width: 1100px;">
+
+        <!-- LEFT INFO PANEL -->
+        <div class="col-md-6 text-white p-5">
+            <h2 class="fw-bold mb-3">Project Tool</h2>
+            <p class="text-secondary fs-5">
+                An enterprise-grade system for managing projects
+                with strict ownership and authorization rules.
+            </p>
+
+            <ul class="mt-4 text-secondary">
+                <li>Ownership-based access</li>
+                <li>Immutable audit-safe data</li>
+                <li>Service-layer authorization</li>
+            </ul>
+        </div>
+
+        <!-- RIGHT FORM PANEL -->
+        <div class="col-md-6 bg-white p-5 auth-card shadow-lg">
+            <div th:replace="~{${content}}"></div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

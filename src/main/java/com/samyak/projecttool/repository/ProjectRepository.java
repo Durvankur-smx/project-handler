@@ -40,7 +40,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByOwnerId(Long ownerId);
 
     /**
-     * Example of defensive JPQL (future dashboard DTO use)
+     * Example of defensive JPQL (future dashboard.html DTO use)
      */
     @Query("""
         SELECT p

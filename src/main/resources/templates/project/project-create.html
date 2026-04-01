@@ -1,0 +1,68 @@
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-semibold mb-1">Create Project</h2>
+        <p class="text-muted mb-0">
+            Projects define ownership and access boundaries.
+        </p>
+    </div>
+
+    <div class="row">
+        <!-- FORM -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+
+                    <form th:action="@{/projects/create(userId=${userId})}"
+                          th:object="${project}"
+                          method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Project Name</label>
+                            <input type="text"
+                                   th:field="*{name}"
+                                   class="form-control form-control-lg"
+                                   placeholder="e.g. Internal Tool">
+
+                            <div class="text-danger small"
+                                 th:if="${#fields.hasErrors('name')}"
+                                 th:errors="*{name}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea th:field="*{description}"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Optional description">
+                            </textarea>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg">
+                            Create Project
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO PANEL -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm bg-light">
+                <div class="card-body">
+                    <h6 class="fw-semibold mb-3">Important Notes</h6>
+                    <ul class="text-muted mb-0">
+                        <li>Project ownership is immutable</li>
+                        <li>Only you can manage this project</li>
+                        <li>Projects can be archived, not deleted</li>
+                        <li>All tasks inherit project authorization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

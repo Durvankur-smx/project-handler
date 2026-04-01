@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class TaskCreateDTO {
 
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
     private String description;

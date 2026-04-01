@@ -1,0 +1,32 @@
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <h3 class="fw-semibold mb-4">Welcome back</h3>
+
+    <p class="text-muted mb-4">
+        Log in to manage your projects securely.
+    </p>
+
+    <form th:action="@{/login-submit}" method="post">
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email"
+                   name="email"
+                   class="form-control form-control-lg"
+                   placeholder="you@company.com"
+                   required>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary btn-lg w-100">
+            Continue
+        </button>
+    </form>
+
+    <p class="text-muted text-center mt-4 mb-0">
+        Don’t have an account?
+        <a href="/signup" class="text-decoration-none">
+            Create one
+        </a>
+    </p>
+
+</div>

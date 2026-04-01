@@ -18,25 +18,35 @@ public class UserApiController {
     }
 
     /**
-     * Simple user creation (bootstrap purpose).
-     * No password, no auth – intentional.
+     * Simple user creation (API).
      */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestParam String name,
                                            @RequestParam String email) {
+
+        System.out.println(">>> API USER CREATE HIT");
+        System.out.println(">>> name = " + name);
+        System.out.println(">>> email = " + email);
 
         User user = new User();
         user.setName(name);
         user.setEmail(email);
         user.setStatus(UserStatus.ACTIVE);
 
+        User saved = userRepository.save(user);
+
+        System.out.println(">>> API USER CREATED: id = " + saved.getId());
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userRepository.save(user));
+                .body(saved);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
+
+        System.out.println(">>> API GET USER: id = " + id);
+
         return userRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

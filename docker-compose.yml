@@ -1,0 +1,24 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: projecttool-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: kotlin2025
+      MYSQL_DATABASE: project_tool
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: projecttool-app
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/project_tool?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: kotlin2025
+
+volumes:
+  mysql_data:

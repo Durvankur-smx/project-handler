@@ -1,0 +1,42 @@
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <h3 class="fw-semibold mb-4">Create your account</h3>
+
+    <p class="text-muted mb-4">
+        Start managing projects with strict ownership controls.
+    </p>
+
+    <form th:action="@{/signup-submit}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text"
+                   name="name"
+                   class="form-control form-control-lg"
+                   placeholder="Your name"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email"
+                   name="email"
+                   class="form-control form-control-lg"
+                   placeholder="you@company.com"
+                   required>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary btn-lg w-100">
+            Create Account
+        </button>
+    </form>
+
+    <p class="text-muted text-center mt-4 mb-0">
+        Already have an account?
+        <a href="/login" class="text-decoration-none">
+            Login
+        </a>
+    </p>
+
+</div>

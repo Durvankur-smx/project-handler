@@ -5,6 +5,7 @@ import com.samyak.projecttool.dto.TaskResponseDTO;
 import com.samyak.projecttool.entity.Project;
 import com.samyak.projecttool.entity.Task;
 import com.samyak.projecttool.entity.enums.TaskStatus;
+import com.samyak.projecttool.exception.InvalidStateException;
 import com.samyak.projecttool.exception.ResourceNotFoundException;
 import com.samyak.projecttool.repository.ProjectRepository;
 import com.samyak.projecttool.repository.TaskRepository;
@@ -85,4 +86,52 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(TaskStatus.ARCHIVED);
         return modelMapper.map(taskRepository.save(task), TaskResponseDTO.class);
     }
+
+    @Override
+    public TaskResponseDTO updateStatus(Long userId, Long taskId, TaskStatus status) {
+
+        authorizationValidator.validateActiveUser(userId);
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        Project project = projectRepository.findById(task.getProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        authorizationValidator.validateProjectOwnership(userId, project);
+
+        if (task.getStatus() == TaskStatus.ARCHIVED ||
+                task.getStatus() == TaskStatus.DONE) {
+            throw new IllegalStateException("Task is immutable");
+        }
+
+        task.setStatus(status);
+        return modelMapper.map(taskRepository.save(task), TaskResponseDTO.class);
+    }
+    @Override
+    public TaskResponseDTO restoreTask(Long userId, Long taskId) {
+
+        authorizationValidator.validateActiveUser(userId);
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        Project project = projectRepository.findById(task.getProjectId())
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        authorizationValidator.validateProjectOwnership(userId, project);
+
+        if (task.getStatus() != TaskStatus.ARCHIVED) {
+            throw new InvalidStateException("Only archived tasks can be restored");
+        }
+
+        // Restored tasks always come back as OPEN
+        task.setStatus(TaskStatus.OPEN);
+
+        return modelMapper.map(
+                taskRepository.save(task),
+                TaskResponseDTO.class
+        );
+    }
+
 }

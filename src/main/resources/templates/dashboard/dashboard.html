@@ -1,0 +1,98 @@
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Dashboard</h2>
+            <p class="text-muted mb-0">
+                Overview of projects you own.
+            </p>
+        </div>
+
+        <a class="btn btn-primary"
+           th:href="@{/projects/create(userId=${userId})}">
+            <i class="bi bi-plus-lg me-1"></i>
+            New Project
+        </a>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Total Projects</p>
+                    <h4 th:text="${projects.size()}">0</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Ownership Model</p>
+                    <h6 class="mb-0">Single-owner</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-1">Security</p>
+                    <h6 class="mb-0">Service-layer enforced</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div th:if="${#lists.isEmpty(projects)}"
+         class="alert alert-light border text-center p-5">
+        <h5 class="mb-2">No projects yet</h5>
+        <p class="text-muted">
+            Create your first project to start managing tasks securely.
+        </p>
+        <a class="btn btn-outline-primary"
+           th:href="@{/projects/create(userId=${userId})}">
+            Create Project
+        </a>
+    </div>
+
+    <!-- PROJECT TABLE -->
+    <div th:if="${!#lists.isEmpty(projects)}"
+         class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Project</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${projects}">
+                    <td class="ps-4">
+                        <strong th:text="${p.name}"></strong>
+                        <div class="text-muted small"
+                             th:text="${p.description}"></div>
+                    </td>
+                    <td>
+                        <span class="badge bg-success"
+                              th:if="${p.status.name() == 'ACTIVE'}">
+                            ACTIVE
+                        </span>
+                        <span class="badge bg-secondary"
+                              th:if="${p.status.name() == 'ARCHIVED'}">
+                            ARCHIVED
+                        </span>
+                    </td>
+                    <td th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

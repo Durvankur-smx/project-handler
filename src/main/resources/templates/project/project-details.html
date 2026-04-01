@@ -1,0 +1,163 @@
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+        <h2 class="fw-semibold mb-1">Project Tasks</h2>
+        <p class="text-muted mb-0">
+            Tasks are strictly scoped to this project.
+        </p>
+    </div>
+
+    <!-- TASK CREATE -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h6 class="fw-semibold mb-3">Add Task</h6>
+
+            <form th:action="@{/projects/tasks/create(userId=${userId},projectId=${projectId})}"
+                  th:object="${task}"
+                  method="post">
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-4">
+                        <input th:field="*{title}"
+                               class="form-control"
+                               placeholder="Task title">
+                        <div class="text-danger small"
+                             th:errors="*{title}"></div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <select th:field="*{priority}" class="form-select">
+                            <option value="">Priority</option>
+                            <option th:value="LOW">LOW</option>
+                            <option th:value="MEDIUM">MEDIUM</option>
+                            <option th:value="HIGH">HIGH</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <button class="btn btn-primary w-100">
+                            Add Task
+                        </button>
+                    </div>
+                </div>
+
+                <textarea th:field="*{description}"
+                          class="form-control"
+                          rows="2"
+                          placeholder="Optional description"></textarea>
+            </form>
+        </div>
+    </div>
+
+    <!-- TASK LIST -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Title</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Created</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="t : ${tasks}">
+                    <td class="ps-4">
+                        <strong th:text="${t.title}"></strong>
+                        <div class="text-muted small"
+                             th:text="${t.description}"></div>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-secondary"
+                              th:if="${t.status.name() == 'OPEN'}">OPEN</span>
+
+                        <span class="badge bg-primary"
+                              th:if="${t.status.name() == 'IN_PROGRESS'}">IN PROGRESS</span>
+
+                        <span class="badge bg-success"
+                              th:if="${t.status.name() == 'DONE'}">DONE</span>
+
+                        <span class="badge bg-dark"
+                              th:if="${t.status.name() == 'ARCHIVED'}">ARCHIVED</span>
+                    </td>
+
+                    <td th:text="${t.priority}"></td>
+
+                    <td th:text="${#temporals.format(t.createdAt,'dd MMM yyyy')}"></td>
+
+                    <!-- ACTIONS -->
+                    <td class="text-end pe-4">
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <!-- OPEN → IN_PROGRESS -->
+                            <form th:if="${t.status.name() == 'OPEN'}"
+                                  th:action="@{/projects/tasks/status(
+                                        userId=${userId},
+                                        projectId=${projectId},
+                                        taskId=${t.id},
+                                        status=IN_PROGRESS)}"
+                                  method="post">
+                                <button class="btn btn-sm btn-outline-primary">
+                                    Start
+                                </button>
+                            </form>
+
+                            <!-- IN_PROGRESS → DONE -->
+                            <form th:if="${t.status.name() == 'IN_PROGRESS'}"
+                                  th:action="@{/projects/tasks/status(
+                                        userId=${userId},
+                                        projectId=${projectId},
+                                        taskId=${t.id},
+                                        status=DONE)}"
+                                  method="post">
+                                <button class="btn btn-sm btn-outline-success">
+                                    Complete
+                                </button>
+                            </form>
+
+                            <!-- ARCHIVE -->
+                            <form th:if="${t.status.name() != 'ARCHIVED'}"
+                                  th:action="@{/projects/tasks/archive(
+                                        userId=${userId},
+                                        projectId=${projectId},
+                                        taskId=${t.id})}"
+                                  method="post">
+                                <button class="btn btn-sm btn-outline-danger">
+                                    Archive
+                                </button>
+                            </form>
+
+                            <!-- RESTORE -->
+                            <form th:if="${t.status.name() == 'ARCHIVED'}"
+                                  th:action="@{/projects/tasks/restore(
+                                        userId=${userId},
+                                        projectId=${projectId},
+                                        taskId=${t.id})}"
+                                  method="post">
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    Restore
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(tasks)}">
+                    <td colspan="5" class="text-center text-muted p-4">
+                        No tasks yet.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>

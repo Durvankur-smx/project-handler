@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ProjectCreateDTO {
 
-    @NotBlank
+    @NotBlank(message = "Project name is required")
     @Size(max = 150)
     private String name;
 
