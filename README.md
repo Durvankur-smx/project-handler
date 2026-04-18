@@ -49,12 +49,6 @@ Postman (API testing)
 IntelliJ IDEA
 Git
 
-Explicitly NOT used:
-No JWT
-No Spring Security
-No hard deletes
-No microservices
-
 DOMAIN MODEL
 
 User:
