@@ -30,11 +30,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByOwnerId(Long ownerId);
 
 
-    @Query("""
-        SELECT p
-        FROM Project p
-        WHERE p.ownerId = :ownerId
-        AND p.status <> 'ARCHIVED'
-    """)
+    @Query("SELECT p FROM Project p WHERE p.ownerId = :ownerId AND p.status <> 'ARCHIVED'")
     List<Project> findAllActiveProjectsForOwner(Long ownerId);
 }
