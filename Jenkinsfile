@@ -6,6 +6,10 @@ pipeline {
         maven 'maven-3'
     }
 
+    environment {
+        DOCKER_USER = "springsam"
+    }
+
     options {
         disableConcurrentBuilds()
     }
@@ -18,26 +22,40 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build JAR') {
             steps {
-                bat '''
-                mvn clean package ^
-                -DskipTests ^
-                -Dmaven.repo.local=%WORKSPACE%\\.m2 ^
-                -Dmaven.artifact.threads=1 ^
+                sh '''
+                mvn clean package \
+                -DskipTests \
                 --no-transfer-progress
                 '''
             }
         }
 
-       stage('Docker Build & Run') {
-           steps {
-               bat '''
-               docker compose -f docker-compose.yml down -v
-               docker compose -f docker-compose.yml up --build -d
-               '''
-           }
-       }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t springsam/projecttool:latest .'
+            }
+        }
 
+        stage('Login Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-pass',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push springsam/projecttool:latest'
+            }
+        }
     }
 }
