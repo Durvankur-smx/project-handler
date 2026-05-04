@@ -1,13 +1,9 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'jdk-17'
-        maven 'maven-3'
-    }
-
     environment {
         DOCKER_USER = "springsam"
+        IMAGE_NAME = "projecttool"
     }
 
     options {
@@ -22,19 +18,23 @@ pipeline {
             }
         }
 
-        stage('Build JAR') {
+        stage('Build JAR (Maven Container)') {
             steps {
                 sh '''
-                mvn clean package \
-                -DskipTests \
-                --no-transfer-progress
+                docker run --rm \
+                -v $PWD:/app \
+                -w /app \
+                maven:3.9.6-eclipse-temurin-17 \
+                mvn clean package -DskipTests --no-transfer-progress
                 '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t springsam/projecttool:latest .'
+                sh '''
+                docker build -t $DOCKER_USER/$IMAGE_NAME:latest .
+                '''
             }
         }
 
@@ -42,11 +42,11 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'docker-pass',
-                    usernameVariable: 'DOCKER_USER',
+                    usernameVariable: 'DOCKER_USER_VAR',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER_VAR --password-stdin
                     '''
                 }
             }
@@ -54,7 +54,9 @@ pipeline {
 
         stage('Push Image') {
             steps {
-                sh 'docker push springsam/projecttool:latest'
+                sh '''
+                docker push $DOCKER_USER/$IMAGE_NAME:latest
+                '''
             }
         }
     }
