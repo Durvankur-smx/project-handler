@@ -18,22 +18,18 @@ pipeline {
             }
         }
 
-        stage('Build JAR (Maven Container)') {
+        stage('Build JAR') {
             steps {
-                sh '''
-                docker run --rm \
-                -v $PWD:/app \
-                -w /app \
-                maven:3.9.6-eclipse-temurin-17 \
-                mvn clean package -DskipTests --no-transfer-progress
+                bat '''
+                mvn clean package -DskipTests
                 '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh '''
-                docker build -t $DOCKER_USER/$IMAGE_NAME:latest .
+                bat '''
+                docker build -t %DOCKER_USER%/%IMAGE_NAME%:latest .
                 '''
             }
         }
@@ -45,8 +41,8 @@ pipeline {
                     usernameVariable: 'DOCKER_USER_VAR',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER_VAR --password-stdin
+                    bat '''
+                    echo %DOCKER_PASS% | docker login -u %DOCKER_USER_VAR% --password-stdin
                     '''
                 }
             }
@@ -54,8 +50,8 @@ pipeline {
 
         stage('Push Image') {
             steps {
-                sh '''
-                docker push $DOCKER_USER/$IMAGE_NAME:latest
+                bat '''
+                docker push %DOCKER_USER%/%IMAGE_NAME%:latest
                 '''
             }
         }
