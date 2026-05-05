@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_USER = "springsam"
         IMAGE_NAME = "projecttool"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 
     options {
@@ -29,7 +30,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 bat '''
-                docker build -t %DOCKER_USER%/%IMAGE_NAME%:latest .
+                docker build -t %DOCKER_USER%/%IMAGE_NAME%:latest ^
+                             -t %DOCKER_USER%/%IMAGE_NAME%:%IMAGE_TAG% .
                 '''
             }
         }
@@ -52,6 +54,7 @@ pipeline {
             steps {
                 bat '''
                 docker push %DOCKER_USER%/%IMAGE_NAME%:latest
+                docker push %DOCKER_USER%/%IMAGE_NAME%:%IMAGE_TAG%
                 '''
             }
         }
