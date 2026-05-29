@@ -3,13 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                url: 'https://github.com/Durvankur-smx/project-handler.git'
-            }
-        }
-
         stage('Build JAR') {
             steps {
                 sh 'chmod +x mvnw'
