@@ -23,15 +23,21 @@ pipeline {
             }
         }
 
-    }
+        stage('Deploy') {
+            steps {
+                sh 'docker stop projecttool-app || true'
+                sh 'docker rm projecttool-app || true'
 
-    post {
-        success {
-            echo 'Build Successful 🚀'
-        }
-
-        failure {
-            echo 'Build Failed ❌'
+                sh '''
+                docker run -d \
+                --name projecttool-app \
+                -p 8082:8081 \
+                -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3307/projectdb \
+                -e SPRING_DATASOURCE_USERNAME=user \
+                -e SPRING_DATASOURCE_PASSWORD=password \
+                projecttool
+                '''
+            }
         }
     }
 }
