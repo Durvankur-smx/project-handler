@@ -51,9 +51,12 @@ pipeline {
                     sh '''
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
-                    docker tag projecttool:latest $DOCKER_USER/projecttool:latest
+                    docker buildx create --name multiarch-builder --use || true
 
-                    docker push $DOCKER_USER/projecttool:latest || true
+                    docker buildx build \
+                      --platform linux/amd64 \
+                      -t $DOCKER_USER/projecttool:latest \
+                      --push .
                     '''
                 }
             }
