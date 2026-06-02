@@ -42,11 +42,10 @@ pipeline {
                 )]) {
 
                     sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker tag projecttool:latest $DOCKER_USER/projecttool:latest
+                    docker push $DOCKER_USER/projecttool:latest
 
-                    docker tag projecttool:latest druv29/projecttool:latest
-
-                    docker push druv29/projecttool:latest
+                    docker push druv29/projecttool:latest || true
                     '''
                 }
             }
