@@ -33,6 +33,13 @@ pipeline {
             }
         }
 
+        stage('Health Check') {
+            steps {
+                sh 'sleep 10'
+                sh 'curl http://host.docker.internal:8082/actuator/health'
+            }
+        }
+
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(
@@ -42,10 +49,11 @@ pipeline {
                 )]) {
 
                     sh '''
-                    docker tag projecttool:latest $DOCKER_USER/projecttool:latest
-                    docker push $DOCKER_USER/projecttool:latest
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
-                    docker push druv29/projecttool:latest || true
+                    docker tag projecttool:latest $DOCKER_USER/projecttool:latest
+
+                    docker push $DOCKER_USER/projecttool:latest
                     '''
                 }
             }
