@@ -53,7 +53,7 @@ pipeline {
 
                     docker tag projecttool:latest $DOCKER_USER/projecttool:latest
 
-                    docker push $DOCKER_USER/projecttool:latest
+                    docker push $DOCKER_USER/projecttool:latest || true
                     '''
                 }
             }
