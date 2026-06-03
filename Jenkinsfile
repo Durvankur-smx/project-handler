@@ -24,7 +24,7 @@ pipeline {
                 sh '''
                 docker run -d \
                 --name projecttool-app \
-                -p 8082:8081 \
+                -p 8082:8080 \
                 -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3307/projectdb \
                 -e SPRING_DATASOURCE_USERNAME=user \
                 -e SPRING_DATASOURCE_PASSWORD=password \
